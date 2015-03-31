@@ -8,9 +8,33 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>Instantchat</servlet-name>
 		<servlet-class>com.instantchat.InstantchatServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>GetToken</servlet-name>
+		<servlet-class>com.instantchat.GetTokenServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Opened</servlet-name>
+		<servlet-class>com.instantchat.OpenedServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>SendMsg</servlet-name>
+		<servlet-class>com.instantchat.SendMsgServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>Instantchat</servlet-name>
 		<url-pattern>/instantchat</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>GetToken</servlet-name>
+		<url-pattern>/gettoken</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Opened</servlet-name>
+		<url-pattern>/opened</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SendMsg</servlet-name>
+		<url-pattern>/sendmsg</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
