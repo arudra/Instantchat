@@ -11,14 +11,18 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.CharBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.http.*;
 
 @SuppressWarnings("serial")
-public class InstantchatServlet extends HttpServlet {
-  private String getChatRoomUriWithChatRoomParam(HttpServletRequest req,
-      String chatroomKey) throws IOException {    
+public class InstantchatServlet extends HttpServlet 
+{	
+  public static String getChatRoomUriWithChatRoomParam(HttpServletRequest req,
+      String chatroomKey) throws IOException 
+  {
     try {
       String query;
       if (chatroomKey == null) {
@@ -26,7 +30,11 @@ public class InstantchatServlet extends HttpServlet {
       } else {
         query = "g=" + chatroomKey;
       }
-      URI thisUri = new URI(req.getRequestURL().toString());
+      
+      String URL = req.getRequestURL().toString();
+      
+      //Make sure to always return instant chat URL which leads to chat room
+      URI thisUri = new URI(URL.substring(0, URL.lastIndexOf('/') + 1) + "instantchat" );
       URI uriWithOptionalChatRoomParam = new URI(thisUri.getScheme(),
           thisUri.getUserInfo(),
           thisUri.getHost(),
@@ -42,14 +50,21 @@ public class InstantchatServlet extends HttpServlet {
   }
  
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {    
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException 
+  {  
     final UserService userService = UserServiceFactory.getUserService();
     final URI uriWithOptionalChatRoomParam;
     String chatroomKey = req.getParameter("g");
-    if (userService.getCurrentUser() == null) {
-      String thisURL = req.getRequestURL().toString();      
-      resp.getWriter().println("<p>Please <a href=\"" +
-          userService.createLoginURL(getChatRoomUriWithChatRoomParam(req, chatroomKey)) + "\">sign in</a>.</p>");
+    
+    final RoomList roomList = RoomList.getInstance();
+    
+    
+    if (userService.getCurrentUser() == null) 
+    {
+    	Logger.getAnonymousLogger().log(Level.INFO, "User is NULL");
+    	String thisURL = req.getRequestURL().toString();      
+    	resp.getWriter().println("<p>Please <a href=\"" + 
+    			userService.createLoginURL(getChatRoomUriWithChatRoomParam(req, chatroomKey)) + "\">sign in</a>.</p>");
      
       return;
     }
@@ -58,15 +73,25 @@ public class InstantchatServlet extends HttpServlet {
    
     ChatRoom chatroom = null;
     String userId = userService.getCurrentUser().getUserId();
-    if (chatroomKey != null) {
+    Logger.getAnonymousLogger().log(Level.INFO, "User: " + userId.toString());
+    
+    if (chatroomKey != null) 
+    {
+    	//Chat room exists
     	chatroom = pm.getObjectById(ChatRoom.class, KeyFactory.stringToKey(chatroomKey));
-      if (chatroom.getUserO() == null && !userId.equals(chatroom.getUserX())) {
-    	  chatroom.setUserO(userId);
-      }
-    } else {
+    	if (chatroom.getUserO() == null && !userId.equals(chatroom.getUserX())) {
+    		chatroom.setUserO(userId);
+    	}
+    } 
+    else {
+    	//Create chat room
+    	Logger.getAnonymousLogger().log(Level.INFO, "Create chatroom");
     	chatroom = new ChatRoom(userId, null, "");
-      pm.makePersistent(chatroom);
-      chatroomKey = KeyFactory.keyToString(chatroom.getKey());
+    	pm.makePersistent(chatroom);
+    	chatroomKey = KeyFactory.keyToString(chatroom.getKey());
+    	
+    	//Add to global list
+    	roomList.addRoom(chatroom);
     }
     pm.close();
    
@@ -85,5 +110,6 @@ public class InstantchatServlet extends HttpServlet {
    
     resp.setContentType("text/html");
     resp.getWriter().write(index);
+    reader.close();
   }
 }

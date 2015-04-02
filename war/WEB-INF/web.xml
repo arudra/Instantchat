@@ -20,7 +20,13 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>SendMsg</servlet-name>
 		<servlet-class>com.instantchat.SendMsgServlet</servlet-class>
 	</servlet>
-	<servlet-mapping>
+	<servlet>
+		<servlet-name>Display</servlet-name>
+		<servlet-class>com.instantchat.DisplayServlet</servlet-class>
+	</servlet><servlet-mapping>
+		<servlet-name>Display</servlet-name>
+		<url-pattern>/display</url-pattern>
+	</servlet-mapping><servlet-mapping>
 		<servlet-name>Instantchat</servlet-name>
 		<url-pattern>/instantchat</url-pattern>
 	</servlet-mapping>
@@ -39,4 +45,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+	<listener>
+		<listener-class>com.instantchat.Init</listener-class>
+	</listener>
+	
 </web-app>

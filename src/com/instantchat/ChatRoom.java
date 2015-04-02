@@ -7,21 +7,15 @@ import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.users.User;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
-
-import org.mortbay.util.ajax.JSON;
-
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 /**
- * @author moishel@google.com (Your Name Here)
+ * 
  *
  */
 @PersistenceCapable
