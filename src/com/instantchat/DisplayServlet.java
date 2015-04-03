@@ -37,12 +37,11 @@ public class DisplayServlet extends HttpServlet
 		while (i < list.size())
 		{
 			room = list.get(i);
-			out.println("<p> <a href = " + InstantchatServlet.getChatRoomUriWithChatRoomParam(req, KeyFactory.keyToString(room.getKey())) 
-					+ ">Chat Room " + i + "</a> </p>");
+			out.println("<p> <a href = " + room.getLink() + ">Chat Room " + i + "</a> </p>");
 			i++;
 		}
 		
-		out.println("<p> <a href = \"instantchat\">Create New Chat</a> </p>");
+		out.println("<p> <a href =\"instantchat\">Create New Chat</a> </p>");
 		out.println("</body>");
 		out.println("</html>");
 		

@@ -2,6 +2,7 @@ package com.instantchat;
 
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.CharBuffer;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,10 +22,11 @@ import javax.servlet.http.*;
 @SuppressWarnings("serial")
 public class InstantchatServlet extends HttpServlet 
 {	
-  public static String getChatRoomUriWithChatRoomParam(HttpServletRequest req,
+  private String getChatRoomUriWithChatRoomParam(HttpServletRequest req,
       String chatroomKey) throws IOException 
   {
     try {
+    	
       String query;
       if (chatroomKey == null) {
         query = "";
@@ -32,9 +35,11 @@ public class InstantchatServlet extends HttpServlet
       }
       
       String URL = req.getRequestURL().toString();
+      Logger.getAnonymousLogger().log(Level.INFO, "Getting link, query: " + query);
       
       //Make sure to always return instant chat URL which leads to chat room
-      URI thisUri = new URI(URL.substring(0, URL.lastIndexOf('/') + 1) + "instantchat" );
+      //URI thisUri = new URI(URL.substring(0, URL.lastIndexOf('/') + 1) + "instantchat" );
+      URI thisUri = new URI(req.getRequestURL().toString());
       URI uriWithOptionalChatRoomParam = new URI(thisUri.getScheme(),
           thisUri.getUserInfo(),
           thisUri.getHost(),
@@ -42,6 +47,21 @@ public class InstantchatServlet extends HttpServlet
           thisUri.getPath(),
           query,
           "");
+      
+      //Store chat room link
+      ArrayList <ChatRoom> list = RoomList.getInstance().getList();
+      String key;
+      for(int i = 0; i < list.size(); i++)
+      {
+    	  key = KeyFactory.keyToString(list.get(i).getKey());
+    	  if(key.equals(chatroomKey))
+    	  {
+    		  list.get(i).setLink(uriWithOptionalChatRoomParam.toString());
+    		  break;
+    	  }
+      }
+      
+      
       return uriWithOptionalChatRoomParam.toString();
     } catch (URISyntaxException e) {
       throw new IOException(e.getMessage());
@@ -97,7 +117,8 @@ public class InstantchatServlet extends HttpServlet
    
     ChannelService channelService = ChannelServiceFactory.getChannelService();
     String token = channelService.createChannel(chatroom.getChannelKey(userId));
-
+    
+    Logger.getAnonymousLogger().log(Level.INFO, "Creating channel");
     FileReader reader = new FileReader("index-template");
     CharBuffer buffer = CharBuffer.allocate(16384);
     reader.read(buffer);

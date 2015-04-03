@@ -8,8 +8,12 @@ import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -22,7 +26,7 @@ import javax.jdo.annotations.PrimaryKey;
 public class ChatRoom {
   @PrimaryKey
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-  private Key key;
+  private Key key;	//Uniquely generated key for each chat (generated on create)
 
   @Persistent
   private String userX;
@@ -32,12 +36,25 @@ public class ChatRoom {
 
   @Persistent
   private String msg;
+  
+  @Persistent
+  private String link;
 
-  ChatRoom(String userX, String userO, String msg) {
+  ChatRoom(String userX, String userO, String msg) 
+  {
+	  Logger.getAnonymousLogger().log(Level.INFO, "Chatroom created");
     this.userX = userX;
     this.userO = userO;
     this.msg = msg;
+    this.link = "";
   }
+  
+  public void setLink(String link) {
+	  Logger.getAnonymousLogger().log(Level.INFO, "Adding link: " + link);
+	  this.link = link; 
+  }
+  
+  public String getLink () { return this.link; }
 
   public Key getKey() {
     return key;

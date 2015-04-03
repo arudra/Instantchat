@@ -25,8 +25,14 @@ public class RoomList {
 	
 	public ArrayList<ChatRoom> getList () { return rooms; }
 	
-	public void addRoom (ChatRoom room) { rooms.add(room); }
+	public void addRoom (ChatRoom room) {
+		Logger.getAnonymousLogger().log(Level.INFO, "Adding new room");
+		rooms.add(room); 
+	}
 	
-	public void deleteRoom (ChatRoom room) { rooms.remove(room); }
+	public void deleteRoom (ChatRoom room) {
+		Logger.getAnonymousLogger().log(Level.INFO, "Removing room");
+		rooms.remove(room); 
+	}
 	
 }
