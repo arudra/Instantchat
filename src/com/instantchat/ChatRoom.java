@@ -9,6 +9,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -27,27 +28,22 @@ public class ChatRoom {
   @PrimaryKey
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
   private Key key;	//Uniquely generated key for each chat (generated on create)
-
-  @Persistent
-  private String userX;
-
-  @Persistent
-  private String userO;
-
-  @Persistent
-  private String msg;
   
   @Persistent
   private String link;
 
-  ChatRoom(String userX, String userO, String msg) 
-  {
-	  Logger.getAnonymousLogger().log(Level.INFO, "Chatroom created");
-    this.userX = userX;
-    this.userO = userO;
-    this.msg = msg;
+  private ArrayList<String> users;
+
+  ChatRoom(String user) {
+    this.users = new ArrayList<String>();
+    this.users.add(user);
     this.link = "";
   }
+  
+  ChatRoom() {
+	    this.users = new ArrayList<String>();
+	    this.link = "";
+	  }
   
   public void setLink(String link) {
 	  Logger.getAnonymousLogger().log(Level.INFO, "Adding link: " + link);
@@ -60,30 +56,40 @@ public class ChatRoom {
     return key;
   }
 
-  public String getUserX() {
-    return userX;
+  public String getUser(String userId) {
+	for (int i = 0; i < users.size(); i++)
+	{
+		if (users.get(i).equals(userId))
+		{
+			return users.get(i);
+		}
+	}
+    return null;
   }
 
-  public String getUserO() {
-    return userO;
-  }
-
-  public void setUserO(String userO) {
-    this.userO = userO;
-  }
-  
-  public void setMsg(String msg) {
-	    this.msg = msg;
+  public int getUsersSize() {
+		return this.users.size();
 	  }
 
-  public String getMessageString() {
+  public boolean addUser(String user) {
+	  for (int i = 0; i < users.size(); i++)
+		{
+		  if (users.get(i).equals(user))
+		  {
+			return false;
+		  }
+		}
+    this.users.add(user);
+    return true;
+  }
+  
+  public boolean removeUser(String user) {
+	  return this.users.remove(user);
+  }
+
+  public String getMessageString(String user, String msg) {
     Map<String, String> state = new HashMap<String, String>();
-    state.put("userX", userX);
-    if (userO == null) {
-      state.put("userO", "");
-    } else {
-      state.put("userO", userO);
-    }
+    state.put("user", user);
     state.put("msg", msg);
     JSONObject message = new JSONObject(state);
     return message.toString();
@@ -93,34 +99,37 @@ public class ChatRoom {
     return user + KeyFactory.keyToString(key);
   }
 
-  private void sendUpdateToUser(String user) {
+  private void sendUpdateToUser(String user, String msg) {
     if (user != null) {
       ChannelService channelService = ChannelServiceFactory.getChannelService();
       String channelKey = getChannelKey(user);
-      channelService.sendMessage(new ChannelMessage(channelKey, getMessageString()));
+      channelService.sendMessage(new ChannelMessage(channelKey, getMessageString(user, msg)));
     }
   }
 
-  public void sendUpdateToClients() {
-    sendUpdateToUser(userX);
-    sendUpdateToUser(userO);
+  public void sendUpdateToClients(String msg) {
+	  for (int i = 0; i < users.size(); i++)
+		{
+		  sendUpdateToUser(users.get(i), msg);
+		}
   }
   
   private void sendMsgToUser(String user, String msg) {
 	    if (user != null) {
 	      ChannelService channelService = ChannelServiceFactory.getChannelService();
 	      String channelKey = getChannelKey(user);
-	      channelService.sendMessage(new ChannelMessage(channelKey, msg));
+	      channelService.sendMessage(new ChannelMessage(channelKey, getMessageString(user, msg)));
 	    }
 	  }
 
 	  public void sendMsgToClients(String msg) {
-	    sendMsgToUser(userX, msg);
-	    sendMsgToUser(userO, msg);
+		  for (int i = 0; i < users.size(); i++)
+			{
+			  sendMsgToUser(users.get(i), msg);
+			}
 	  }
   
   public void sendMsg(String user, String msg) {
-	  setMsg(user + ": " + msg);
-	  sendUpdateToClients();
+	  sendUpdateToClients(user + ": " + msg);
 	  }
 }

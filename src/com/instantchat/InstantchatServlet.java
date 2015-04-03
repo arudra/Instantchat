@@ -2,7 +2,6 @@ package com.instantchat;
 
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -34,7 +33,6 @@ public class InstantchatServlet extends HttpServlet
         query = "g=" + chatroomKey;
       }
       
-      String URL = req.getRequestURL().toString();
       Logger.getAnonymousLogger().log(Level.INFO, "Getting link, query: " + query);
       
       //Make sure to always return instant chat URL which leads to chat room
@@ -73,16 +71,13 @@ public class InstantchatServlet extends HttpServlet
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException 
   {  
     final UserService userService = UserServiceFactory.getUserService();
-    final URI uriWithOptionalChatRoomParam;
     String chatroomKey = req.getParameter("g");
     
     final RoomList roomList = RoomList.getInstance();
     
-    
     if (userService.getCurrentUser() == null) 
     {
-    	Logger.getAnonymousLogger().log(Level.INFO, "User is NULL");
-    	String thisURL = req.getRequestURL().toString();      
+    	Logger.getAnonymousLogger().log(Level.INFO, "User is NULL");      
     	resp.getWriter().println("<p>Please <a href=\"" + 
     			userService.createLoginURL(getChatRoomUriWithChatRoomParam(req, chatroomKey)) + "\">sign in</a>.</p>");
      
@@ -92,45 +87,60 @@ public class InstantchatServlet extends HttpServlet
     PersistenceManager pm = PMF.get().getPersistenceManager();
    
     ChatRoom chatroom = null;
-    String userId = userService.getCurrentUser().getUserId();
+    String userId = userService.getCurrentUser().getNickname();
     Logger.getAnonymousLogger().log(Level.INFO, "User: " + userId.toString());
+    boolean newjoined = false;
+    boolean newroom = false;
     
     if (chatroomKey != null) 
     {
     	//Chat room exists
     	chatroom = pm.getObjectById(ChatRoom.class, KeyFactory.stringToKey(chatroomKey));
-    	if (chatroom.getUserO() == null && !userId.equals(chatroom.getUserX())) {
-    		chatroom.setUserO(userId);
-    	}
+    	newjoined = chatroom.addUser(userId);
+    	Logger.getAnonymousLogger().log(Level.INFO, "NEW USER JOINED");  
     } 
     else {
     	//Create chat room
     	Logger.getAnonymousLogger().log(Level.INFO, "Create chatroom");
-    	chatroom = new ChatRoom(userId, null, "");
+    	//chatroom = new ChatRoom(userId);
+    	chatroom = new ChatRoom();
     	pm.makePersistent(chatroom);
     	chatroomKey = KeyFactory.keyToString(chatroom.getKey());
     	
     	//Add to global list
     	roomList.addRoom(chatroom);
+    	//Setlink
+    	getChatRoomUriWithChatRoomParam(req, chatroomKey);
+    	newroom = true;
     }
     pm.close();
-   
+
+	//Redirect to chatroom url
+    if (newroom == true)
+    {
+      resp.sendRedirect(resp.encodeRedirectURL("/instantchat?g=" + chatroomKey + "#"));
+      return;
+    }
+    
     ChannelService channelService = ChannelServiceFactory.getChannelService();
     String token = channelService.createChannel(chatroom.getChannelKey(userId));
     
-    Logger.getAnonymousLogger().log(Level.INFO, "Creating channel");
+    Logger.getAnonymousLogger().log(Level.INFO, "Creating channel");  
+    
     FileReader reader = new FileReader("index-template");
     CharBuffer buffer = CharBuffer.allocate(16384);
     reader.read(buffer);
     String index = new String(buffer.array());
     index = index.replaceAll("\\{\\{ chatroom_key \\}\\}", chatroomKey);
-    index = index.replaceAll("\\{\\{ me \\}\\}", userId);
     index = index.replaceAll("\\{\\{ token \\}\\}", token);
-    index = index.replaceAll("\\{\\{ initial_message \\}\\}", chatroom.getMessageString());
-    index = index.replaceAll("\\{\\{ chatroom_link \\}\\}", getChatRoomUriWithChatRoomParam(req, chatroomKey));
    
     resp.setContentType("text/html");
     resp.getWriter().write(index);
     reader.close();
+    if (newjoined)
+    {
+    	Logger.getAnonymousLogger().log(Level.INFO, "NEW USER JOINED - SENDING MSG TO EVERYONE");
+    	chatroom.sendMsgToClients(userId + " has joined the chatroom");
+    }
   }
 }

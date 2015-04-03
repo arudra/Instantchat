@@ -38,11 +38,10 @@ public class GetTokenServlet extends HttpServlet {
     ChatRoom chatroom = pm.getObjectById(ChatRoom.class, KeyFactory.stringToKey(chatroomId));
     
     //Get user
-    String currentUserId = userService.getCurrentUser().getUserId();
+    String currentUserId = userService.getCurrentUser().getNickname();
     
     //Check this user is one of participants
-    if (currentUserId.equals(chatroom.getUserX()) ||
-        currentUserId.equals(chatroom.getUserO())) 
+    if (chatroom.getUser(currentUserId) != null) 
     {
       String channelKey = chatroom.getChannelKey(currentUserId);
       ChannelService channelService = ChannelServiceFactory.getChannelService();

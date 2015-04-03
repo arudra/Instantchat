@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.datastore.KeyFactory;
-
 @SuppressWarnings("serial")
 public class DisplayServlet extends HttpServlet
 {
@@ -41,7 +39,7 @@ public class DisplayServlet extends HttpServlet
 			i++;
 		}
 		
-		out.println("<p> <a href =\"instantchat\">Create New Chat</a> </p>");
+		out.println("<p> <a href =\"instantchat\">Create New Chat Room</a> </p>");
 		out.println("</body>");
 		out.println("</html>");
 		

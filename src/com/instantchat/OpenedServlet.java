@@ -28,7 +28,7 @@ public class OpenedServlet extends HttpServlet {
 	  PersistenceManager pm = PMF.get().getPersistenceManager();
 	  ChatRoom chatroom = pm.getObjectById(ChatRoom.class, KeyFactory.stringToKey(chatroomId));
 	  if (chatroomId != null && req.getUserPrincipal() != null) {
-		  chatroom.sendUpdateToClients();
+		  chatroom.sendUpdateToClients("");
 	      resp.setContentType("text/plain");
 	      resp.getWriter().println("ok");
 	  }

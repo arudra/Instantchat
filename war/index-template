@@ -19,41 +19,11 @@
     <script type='text/javascript'>
       var state = {
         chatroom_key: '{{ chatroom_key }}',
-        me: '{{ me }}'
-      };
-
-      updateChatRoom = function() {
-        var display = {
-          'other-user': 'none',
-          'this-chatroom': 'block',
-		  'chatsend': 'block',
-		  'chatmsg': 'block',
-		  'chat': 'block',
-        };
-
-        if (!state.userO || state.userO == '') {
-          display['other-user'] = 'block';
-          display['this-chatroom'] = 'none';
-		  display['chatsend'] = 'none';
-		  display['chatmsg'] = 'none';
-		  display['chat'] = 'none';
-        } else {
-		  display['other-user'] = 'none';
-          display['this-chatroom'] = 'block';
-		  display['chatsend'] = 'block';
-		  display['chatmsg'] = 'block';
-		  display['chat'] = 'block';
-		}
-
-        for (var label in display) {
-          document.getElementById(label).style.display = display[label];
-        }
       };
 	  
 	  updateChat = function(msg) {
 		var element = document.getElementById("chat");
 		element.value += msg + "\n";
-		document.getElementById('chatmsg').value = "";
       };
 
       sendMessage = function(path, opt_param) {
@@ -67,7 +37,16 @@
       };
 	  
 	  sendMsg = function(msg) {
+	      document.getElementById('chatmsg').value = "";
           sendMessage('/sendmsg', 'm=' + msg);
+      }
+	  
+	  enterSend = function(event) {
+		if (event.keyCode == 13)
+		{
+		 event.preventDefault();
+          sendMsg(document.getElementById('chatmsg').value);
+		}
       }
 
       onOpened = function() {
@@ -76,9 +55,6 @@
 
       onMessage = function(m) {
         newState = JSON.parse(m.data);
-        state.userX = newState.userX || state.userX;
-        state.userO = newState.userO || state.userO;
-        updateChatRoom();
 		if (newState.msg != "")
 		{
 		   updateChat(newState.msg);
@@ -101,27 +77,18 @@
 
       initialize = function() {
         openChannel();
-        onMessage({data: '{{ initial_message }}'});
       }
 
       setTimeout(initialize, 100);
 
     </script>
     <div id='display-area'>
-      <h2>Channel-based Chat</h2>
-      <div id='other-user' style='display:none'>
-        Waiting for another user to join.<br>
-        Send them this link to chat:<br>
-        <div id='chatroom-link'><a href='{{ chatroom_link }}'>{{ chatroom_link }}</a></div>
-      </div>
+      <h2>InstantChat</h2>
 	  <p>
-	  <textarea id="chatmsg" name="msg" rows="1" cols="20" ></textarea>
+	  <textarea id="chatmsg" name="msg" rows="1" cols="20" onkeypress="enterSend(event)"></textarea>
 	  <button id="chatsend" type="button" onclick="sendMsg(document.getElementById('chatmsg').value)" >Send</button>
 	  </p>
       <textarea id="chat" rows="10" cols="100"  readonly></textarea>
-	  <div id='this-chatroom' float='top'>
-        Quick link to this chatroom: <span id='this-chatroom-link'><a href='{{ chatroom_link }}'>{{ chatroom_link }}</a></span>
-      </div>
     </div>
   </body>
 </html>

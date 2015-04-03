@@ -32,10 +32,22 @@ public class SendMsgServlet extends HttpServlet {
     ChatRoom chatroom = pm.getObjectById(ChatRoom.class, KeyFactory.stringToKey(chatroomId));
    
     //Get user
-    String currentUserId = userService.getCurrentUser().getUserId();
+    String currentUserId = userService.getCurrentUser().getNickname();
     
-    //Send message
-    chatroom.sendMsg(currentUserId, msg);
+    //check if control message
+    if (msg.startsWith("/"))
+    {
+    	if (msg.equals("/exit"))
+    	{
+    		chatroom.removeUser(currentUserId);
+    		chatroom.sendMsgToClients(currentUserId + " has left the chatroom");
+    	}
+    }
+    else
+    {
+    	//Send message
+    	chatroom.sendMsg(currentUserId, msg);
+    }
     pm.close();
   }
 }
