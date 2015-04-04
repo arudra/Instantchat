@@ -95,9 +95,14 @@ public class InstantchatServlet extends HttpServlet
     if (chatroomKey != null) 
     {
     	//Chat room exists
-    	chatroom = pm.getObjectById(ChatRoom.class, KeyFactory.stringToKey(chatroomKey));
-    	newjoined = chatroom.addUser(userId);
-    	Logger.getAnonymousLogger().log(Level.INFO, "NEW USER JOINED");  
+    	try {
+    		chatroom = pm.getObjectById(ChatRoom.class, KeyFactory.stringToKey(chatroomKey));
+    	} catch (Exception e) {
+    		resp.setContentType("text/html");
+    	    resp.getWriter().write("This chat room does not exist");
+    	    return;
+    	}
+    	newjoined = chatroom.addUser(userId); 
     } 
     else {
     	//Create chat room
@@ -132,14 +137,19 @@ public class InstantchatServlet extends HttpServlet
     String index = new String(buffer.array());
     index = index.replaceAll("\\{\\{ chatroom_key \\}\\}", chatroomKey);
     index = index.replaceAll("\\{\\{ token \\}\\}", token);
+    index = index.replaceAll("\\{\\{ me \\}\\}", userId);
    
     resp.setContentType("text/html");
     resp.getWriter().write(index);
     reader.close();
     if (newjoined)
     {
-    	Logger.getAnonymousLogger().log(Level.INFO, "NEW USER JOINED " + chatroom + " - SENDING MSG TO EVERYONE");
-    	chatroom.sendMsgToClients(userId + " has joined the chatroom");
+    	try {
+    	Thread.sleep(1000);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	chatroom.sendMsgToClients(userId + " has joined the chat room.");
     }
   }
 }

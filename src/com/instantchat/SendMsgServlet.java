@@ -38,12 +38,28 @@ public class SendMsgServlet extends HttpServlet {
     String currentUserId = userService.getCurrentUser().getNickname();
     
     //check if control message
+    Logger.getAnonymousLogger().log(Level.INFO, "msg = " + msg);
     if (msg.startsWith("/"))
     {
     	if (msg.equals("/exit"))
     	{
+    		chatroom.sendMsgToClients(currentUserId + " has left the chat room.");
     		chatroom.removeUser(currentUserId);
-    		chatroom.sendMsgToClients(currentUserId + " has left the chatroom");
+    		if (chatroom.getUsersSize() == 0)
+    		{
+    			//Destory chatroom
+    			RoomList.getInstance().deleteRoom(KeyFactory.stringToKey(chatroomKey));
+    			pm.deletePersistent(chatroom);
+    		}
+    	}
+    	else if (msg.equals("/help"))
+    	{
+    		//Send help message
+    		chatroom.sendUpdateToUser(currentUserId, "Type /exit to exit the chat room.");
+    	}
+    	else
+    	{
+    		chatroom.sendUpdateToUser(currentUserId, "Unrecognized Command.");
     	}
     }
     else
@@ -53,7 +69,8 @@ public class SendMsgServlet extends HttpServlet {
     	
     	//Save to datastore
     	message = new Message(chatroomKey, currentUserId, msg);
-    	ObjectifyService.begin().save().entity(message).now();
+    	//ObjectifyService.begin().save().entity(message).now();
+    	ObjectifyService.ofy().save().entity(message).now();
     }
     pm.close();
   }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.datastore.Key;
+
 /*
  * This global class holds the current
  * list of available chat rooms.
@@ -30,9 +32,18 @@ public class RoomList {
 		rooms.add(room); 
 	}
 	
-	public void deleteRoom (ChatRoom room) {
+	public void deleteRoom (Key chatroomkey) {
 		Logger.getAnonymousLogger().log(Level.INFO, "Removing room");
-		rooms.remove(room); 
+		boolean retval = false;
+		for (int i = 0; i < rooms.size(); i++)
+		{
+			if (rooms.get(i).getKey().equals(chatroomkey))
+			{
+				//TODO delete room
+				rooms.remove(i);
+			}
+		}
+		Logger.getAnonymousLogger().log(Level.INFO, "Retval = " + retval);
 	}
 	
 }

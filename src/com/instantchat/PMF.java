@@ -6,7 +6,7 @@ import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManagerFactory;
 
 /**
- * @author moishel@google.com (Your Name Here)
+ * 
  *
  */
 public final class PMF {

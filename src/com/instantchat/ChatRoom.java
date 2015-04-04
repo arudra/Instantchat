@@ -33,12 +33,6 @@ public class ChatRoom {
   private String link;
 
   public ArrayList<String> users;
-
-  ChatRoom(String user) {
-    this.users = new ArrayList<String>();
-    this.users.add(user);
-    this.link = "";
-  }
   
   ChatRoom() {
 	    this.users = new ArrayList<String>();

@@ -19,6 +19,7 @@
     <script type='text/javascript'>
       var state = {
         chatroom_key: '{{ chatroom_key }}',
+		me: '{{ me }}'
       };
 	  
 	  updateChat = function(msg) {
@@ -57,7 +58,14 @@
         newState = JSON.parse(m.data);
 		if (newState.msg != "")
 		{
-		   updateChat(newState.msg);
+			if (newState.msg == state.me + " has left the chat room.")
+			{
+			setTimeout(function(){ window.location.assign("/display"); }, 500);
+		    }
+			else
+			{
+		      updateChat(newState.msg);
+			}
 		}
       }
 
@@ -84,6 +92,7 @@
     </script>
     <div id='display-area'>
       <h2>InstantChat</h2>
+	  <p><a href="javascript:sendMsg('/exit')">Leave Chat Room</a></p>
 	  <p>
 	  <textarea id="chatmsg" name="msg" rows="1" cols="20" onkeypress="enterSend(event)"></textarea>
 	  <button id="chatsend" type="button" onclick="sendMsg(document.getElementById('chatmsg').value)" >Send</button>
