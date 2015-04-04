@@ -43,17 +43,17 @@ public class OpenedServlet extends HttpServlet {
 														.load()
 														.type(Message.class)
 														.ancestor(thisChat)
-														.order("-date")
+														.order("date")
 														.list();
 				
 				//Most recently added user
 				String userId = chatroom.users.get(chatroom.users.size()-1);
 				Logger.getAnonymousLogger().log(Level.INFO, "Sending History to " + userId);
 				
-				for(int i = messages.size() - 1; i >= 0; i--)
+				for(Message m : messages)
 				{
-					Logger.getAnonymousLogger().log(Level.INFO, "History: " + messages.get(i).user + ": " + messages.get(i).content);
-					chatroom.sendUpdateToUser(userId, messages.get(i).user + ": " + messages.get(i).content);
+					Logger.getAnonymousLogger().log(Level.INFO, "History: " + m.user + ": " + m.content);
+					chatroom.sendUpdateToUser(userId, m.user + ": " + m.content);
 				}
 		  }
 		  
