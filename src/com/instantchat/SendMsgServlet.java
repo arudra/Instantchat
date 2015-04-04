@@ -69,8 +69,8 @@ public class SendMsgServlet extends HttpServlet {
     	
     	//Save to datastore
     	message = new Message(chatroomKey, currentUserId, msg);
-    	//ObjectifyService.begin().save().entity(message).now();
-    	ObjectifyService.ofy().save().entity(message).now();
+    	ObjectifyService.begin().save().entity(message).now();
+    	//ObjectifyService.ofy().save().entity(message).now();
     }
     pm.close();
   }
