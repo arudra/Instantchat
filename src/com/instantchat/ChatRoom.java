@@ -32,7 +32,7 @@ public class ChatRoom {
   @Persistent
   private String link;
 
-  private ArrayList<String> users;
+  public ArrayList<String> users;
 
   ChatRoom(String user) {
     this.users = new ArrayList<String>();
@@ -99,7 +99,7 @@ public class ChatRoom {
     return user + KeyFactory.keyToString(key);
   }
 
-  private void sendUpdateToUser(String user, String msg) {
+  public void sendUpdateToUser(String user, String msg) {
     if (user != null) {
       ChannelService channelService = ChannelServiceFactory.getChannelService();
       String channelKey = getChannelKey(user);

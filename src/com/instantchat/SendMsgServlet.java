@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.googlecode.objectify.*;
 
 @SuppressWarnings("serial")
 public class SendMsgServlet extends HttpServlet {
@@ -21,15 +22,17 @@ public class SendMsgServlet extends HttpServlet {
 	    
     UserService userService = UserServiceFactory.getUserService();
     
+    Message message;
+    
     //Get chat ID
-    String chatroomId = req.getParameter("chatroomkey");
+    String chatroomKey = req.getParameter("chatroomkey");
     
     //Get message
     String msg = req.getParameter("m");
     PersistenceManager pm = PMF.get().getPersistenceManager();
     
     //Get chat room instance
-    ChatRoom chatroom = pm.getObjectById(ChatRoom.class, KeyFactory.stringToKey(chatroomId));
+    ChatRoom chatroom = pm.getObjectById(ChatRoom.class, KeyFactory.stringToKey(chatroomKey));
    
     //Get user
     String currentUserId = userService.getCurrentUser().getNickname();
@@ -47,6 +50,10 @@ public class SendMsgServlet extends HttpServlet {
     {
     	//Send message
     	chatroom.sendMsg(currentUserId, msg);
+    	
+    	//Save to datastore
+    	message = new Message(chatroomKey, currentUserId, msg);
+    	ObjectifyService.begin().save().entity(message).now();
     }
     pm.close();
   }

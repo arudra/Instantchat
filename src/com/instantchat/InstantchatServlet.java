@@ -122,11 +122,10 @@ public class InstantchatServlet extends HttpServlet
       return;
     }
     
+    Logger.getAnonymousLogger().log(Level.INFO, "Creating channel");
     ChannelService channelService = ChannelServiceFactory.getChannelService();
     String token = channelService.createChannel(chatroom.getChannelKey(userId));
-    
-    Logger.getAnonymousLogger().log(Level.INFO, "Creating channel");  
-    
+
     FileReader reader = new FileReader("index-template");
     CharBuffer buffer = CharBuffer.allocate(16384);
     reader.read(buffer);
@@ -139,7 +138,7 @@ public class InstantchatServlet extends HttpServlet
     reader.close();
     if (newjoined)
     {
-    	Logger.getAnonymousLogger().log(Level.INFO, "NEW USER JOINED - SENDING MSG TO EVERYONE");
+    	Logger.getAnonymousLogger().log(Level.INFO, "NEW USER JOINED " + chatroom + " - SENDING MSG TO EVERYONE");
     	chatroom.sendMsgToClients(userId + " has joined the chatroom");
     }
   }

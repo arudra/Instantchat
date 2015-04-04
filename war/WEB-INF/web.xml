@@ -23,7 +23,13 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
 		<servlet-name>Display</servlet-name>
 		<servlet-class>com.instantchat.DisplayServlet</servlet-class>
+	</servlet><servlet>
+		<servlet-name>ChannelPresence</servlet-name>
+		<servlet-class>com.instantchat.ChannelServlet</servlet-class>
 	</servlet><servlet-mapping>
+		<servlet-name>ChannelPresence</servlet-name>
+		<url-pattern>/_ah/channel/connected/</url-pattern>
+	</servlet-mapping><servlet-mapping>
 		<servlet-name>Display</servlet-name>
 		<url-pattern>/display</url-pattern>
 	</servlet-mapping><servlet-mapping>
@@ -49,4 +55,5 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<listener-class>com.instantchat.Init</listener-class>
 	</listener>
 	
+
 </web-app>
