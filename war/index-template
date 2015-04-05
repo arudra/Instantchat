@@ -25,6 +25,7 @@
 	  updateChat = function(msg) {
 		var element = document.getElementById("chat");
 		element.value += msg + "\n";
+		document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
       };
 
       sendMessage = function(path, opt_param) {

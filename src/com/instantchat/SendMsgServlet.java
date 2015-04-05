@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.memcache.ErrorHandlers;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.*;
@@ -66,11 +69,21 @@ public class SendMsgServlet extends HttpServlet {
     {
     	//Send message
     	chatroom.sendMsg(currentUserId, msg);
+    	chatroom.increment();
     	
     	//Save to datastore
     	message = new Message(chatroomKey, currentUserId, msg);
     	ObjectifyService.begin().save().entity(message).now();
-    	//ObjectifyService.ofy().save().entity(message).now();
+    	
+    	//Save to Memcache
+    	MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+        syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+        Logger.getAnonymousLogger().log(Level.INFO, "Saving to memcache. KEY-> " + chatroomKey + "_" + chatroom.count 
+        												+ " VALUE-> " + currentUserId + ": " + msg);
+        
+        // Key = chatroomKey_# --------- Value = userID: msg
+        syncCache.put(chatroomKey + "_" + chatroom.count, currentUserId + ": " + msg);
+        
     }
     pm.close();
   }

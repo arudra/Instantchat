@@ -3,6 +3,9 @@
 package com.instantchat;
 
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.memcache.ErrorHandlers;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -38,7 +41,7 @@ public class OpenedServlet extends HttpServlet {
 		  if(chatroom.users.size() > 1)
 		  {
 				Key<Chat> thisChat = Key.create(Chat.class, chatroomKey);
-				
+			    //Data Store
 				List<Message> messages = ObjectifyService.begin()
 														.load()
 														.type(Message.class)
@@ -46,15 +49,28 @@ public class OpenedServlet extends HttpServlet {
 														.order("date")
 														.list();
 				
+				//Memcache
+				
 				//Most recently added user
 				String userId = chatroom.users.get(chatroom.users.size()-1);
 				Logger.getAnonymousLogger().log(Level.INFO, "Sending History to " + userId);
-				
-				for(Message m : messages)
-				{
-					Logger.getAnonymousLogger().log(Level.INFO, "History: " + m.user + ": " + m.content);
-					chatroom.sendUpdateToUser(userId, m.user + ": " + m.content);
-				}
+       
+		        //Most recently added user
+		        Object message;
+		        
+		        for(int i = 1; i <= chatroom.count; i++)
+		        {
+		        	message = syncCache.get(chatroomKey + "_" + i);
+		        	
+		        	if(message != null) {
+		        		chatroom.sendUpdateToUser(userId, message.toString());
+		        	}
+		        	else	//Get from data store
+		        	{
+		        		chatroom.sendUpdateToUser(userId, messages.get(i - 1).user + ": " + messages.get(i - 1).content);
+		        	}
+		        }
+		        
 		  }
 		  
 	      resp.setContentType("text/plain");

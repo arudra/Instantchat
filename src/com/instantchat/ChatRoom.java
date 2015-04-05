@@ -34,10 +34,15 @@ public class ChatRoom {
 
   public ArrayList<String> users;
   
+  public int count;
+  
   ChatRoom() {
 	    this.users = new ArrayList<String>();
 	    this.link = "";
+	    this.count = 0;
 	  }
+  
+  public void increment () { this.count += 1; }
   
   public void setLink(String link) {
 	  Logger.getAnonymousLogger().log(Level.INFO, "Adding link: " + link);
