@@ -31,6 +31,12 @@ public class ChatRoom {
   
   @Persistent
   private String link;
+  
+  @Persistent
+  private String name;
+  
+  @Persistent
+  private String password;
 
   public ArrayList<String> users;
   
@@ -40,6 +46,7 @@ public class ChatRoom {
 	    this.users = new ArrayList<String>();
 	    this.link = "";
 	    this.count = 0;
+	    this.name = "";
 	  }
   
   public void increment () { this.count += 1; }
@@ -47,6 +54,16 @@ public class ChatRoom {
   public void setLink(String link) {
 	  Logger.getAnonymousLogger().log(Level.INFO, "Adding link: " + link);
 	  this.link = link; 
+  
+  }
+  
+  public void setName(String name) {
+	  Logger.getAnonymousLogger().log(Level.INFO, "Adding name: " + name);
+	  this.name = name; 
+  }
+  
+  public void setPassword(String password) {
+	  this.password = password; 
   }
   
   public String getLink () { return this.link; }
@@ -65,6 +82,13 @@ public class ChatRoom {
 	}
     return null;
   }
+  
+  public String getName() {
+		return this.name;
+	  }
+  public String getPassword() {
+		return this.password;
+	  }
 
   public int getUsersSize() {
 		return this.users.size();

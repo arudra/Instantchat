@@ -46,7 +46,7 @@ public class SendMsgServlet extends HttpServlet {
     {
     	if (msg.equals("/exit"))
     	{
-    		chatroom.sendMsgToClients(currentUserId + " has left the chat room.");
+    		chatroom.sendMsgToClients("/" + currentUserId + " has left the chat room.");
     		chatroom.removeUser(currentUserId);
     		if (chatroom.getUsersSize() == 0)
     		{
@@ -58,11 +58,11 @@ public class SendMsgServlet extends HttpServlet {
     	else if (msg.equals("/help"))
     	{
     		//Send help message
-    		chatroom.sendUpdateToUser(currentUserId, "Type /exit to exit the chat room.");
+    		chatroom.sendUpdateToUser(currentUserId, "/Type '/exit' to exit the chat room.");
     	}
     	else
     	{
-    		chatroom.sendUpdateToUser(currentUserId, "Unrecognized Command.");
+    		chatroom.sendUpdateToUser(currentUserId, "/Unrecognized Command.");
     	}
     }
     else

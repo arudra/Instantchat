@@ -43,7 +43,7 @@ public class InstantchatServlet extends HttpServlet
           thisUri.getPort(),
           thisUri.getPath(),
           query,
-          "");
+          null);
       
       //Store chat room link
       ArrayList <ChatRoom> list = RoomList.getInstance().getList();
@@ -90,6 +90,8 @@ public class InstantchatServlet extends HttpServlet
     Logger.getAnonymousLogger().log(Level.INFO, "User: " + userId.toString());
     boolean newjoined = false;
     boolean newroom = false;
+    String chatroomName = "";
+	String chatroomPassword = "";
     
     if (chatroomKey != null) 
     {
@@ -101,13 +103,32 @@ public class InstantchatServlet extends HttpServlet
     	    resp.getWriter().write("This chat room does not exist");
     	    return;
     	}
+    	chatroomPassword = req.getParameter("password");
+    	if (chatroomPassword == null)
+    	{
+    		chatroomPassword = "";
+    	}
+    	if (!(chatroomPassword.equals(chatroom.getPassword())))
+    	{
+    		resp.setContentType("text/html");
+    		resp.getWriter().write("<script>alert('Wrong Password!');");
+    	    resp.getWriter().write("window.location.assign('/display');</script>");
+    	    return;
+    	}
     	newjoined = chatroom.addUser(userId); 
     } 
     else {
     	//Create chat room
     	Logger.getAnonymousLogger().log(Level.INFO, "Create chatroom");
-    	//chatroom = new ChatRoom(userId);
+    	chatroomName = req.getParameter("roomname");
+    	chatroomPassword = req.getParameter("password");
+    	if (chatroomPassword == null)
+    	{
+    		chatroomPassword = "";
+    	}
     	chatroom = new ChatRoom();
+    	chatroom.setName(chatroomName);
+    	chatroom.setPassword(chatroomPassword);
     	pm.makePersistent(chatroom);
     	chatroomKey = KeyFactory.keyToString(chatroom.getKey());
     	
@@ -122,7 +143,7 @@ public class InstantchatServlet extends HttpServlet
 	//Redirect to chatroom url
     if (newroom == true)
     {
-      resp.sendRedirect(resp.encodeRedirectURL("/instantchat?g=" + chatroomKey + "#"));
+      resp.sendRedirect(resp.encodeRedirectURL("/instantchat?g=" + chatroomKey + "&password=" + chatroomPassword));
       return;
     }
     
@@ -148,7 +169,7 @@ public class InstantchatServlet extends HttpServlet
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
-    	chatroom.sendMsgToClients(userId + " has joined the chat room.");
+    	chatroom.sendMsgToClients("/" + userId + " has joined the chat room.");
     }
   }
 }

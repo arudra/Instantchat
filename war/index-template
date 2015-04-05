@@ -59,10 +59,17 @@
         newState = JSON.parse(m.data);
 		if (newState.msg != "")
 		{
-			if (newState.msg == state.me + " has left the chat room.")
+		    if (newState.msg.lastIndexOf("/",0) == 0)
 			{
-			setTimeout(function(){ window.location.assign("/display"); }, 500);
-		    }
+			  if (newState.msg.split("/")[1] == state.me + " has left the chat room.")
+			  {
+			    setTimeout(function(){ window.location.assign("/display"); }, 500);
+		      }
+			  else
+			  {
+			    alert(newState.msg.split("/")[1]);
+			  }
+			}
 			else
 			{
 		      updateChat(newState.msg);
