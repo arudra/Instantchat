@@ -253,6 +253,31 @@ public class DisplayServlet extends HttpServlet
 		
 		out.println("<body id='body' style='overflow:hidden;'>");
 		out.println("<h1>Chat Rooms</h1>");
+		
+		int i = 0;
+		while (i < list.size())
+		{
+			room = list.get(i);
+
+			//out.println("<p><button id='passwordpopup' onclick=\"div_roompassword_show('" + room.getLink() + "')\">" + room.getName() + "</button></p>");
+			
+			out.println("        <div class='container'>");
+			out.println("            <div class='content'>");
+			out.println("                <ul class='ca-menu'>");
+			out.println("                    <li>");
+			out.println("                        <a href='#' onclick=\"div_roompassword_show('" + room.getLink() + "'); return false;\">");
+			out.println("                            <span class='ca-icon'>" + room.getName() + "</span>");
+			out.println("                        </a>");
+			out.println("                    </li>");
+			out.println("                </ul>");
+			out.println("            </div>");
+			out.println("        </div>");
+			
+			
+			
+			i++;
+		}
+		
 		out.println("<div id='newroom'>");
 		out.println("<div id='popupContact'>");
 		out.println("<form action=\"\\instantchat\" id='newroomform' method='get' name='form'>");
@@ -281,29 +306,7 @@ public class DisplayServlet extends HttpServlet
 	
 		
 		
-		int i = 0;
-		while (i < list.size())
-		{
-			room = list.get(i);
-
-			//out.println("<p><button id='passwordpopup' onclick=\"div_roompassword_show('" + room.getLink() + "')\">" + room.getName() + "</button></p>");
-			
-			out.println("        <div class='container'>");
-			out.println("            <div class='content'>");
-			out.println("                <ul class='ca-menu'>");
-			out.println("                    <li>");
-			out.println("                        <a href='#' onclick=\"div_roompassword_show('" + room.getLink() + "'); return false;\">");
-			out.println("                            <span class='ca-icon'>" + room.getName() + "</span>");
-			out.println("                        </a>");
-			out.println("                    </li>");
-			out.println("                </ul>");
-			out.println("            </div>");
-			out.println("        </div>");
-			
-			
-			
-			i++;
-		}
+		
 		out.println("<p><button id='newroompopup' onclick='div_newroom_show()'>Create New Room</button></p>");
 		out.println("<p> <a href =" + userService.createLogoutURL(getLogoutURL(req)) + ">Logout</a> </p>");
 		out.println("<script>");
