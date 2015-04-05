@@ -40,8 +40,8 @@ public class OpenedServlet extends HttpServlet {
 		  //Populate with all previous messages
 		  if(chatroom.users.size() > 1)
 		  {
-				Key<Chat> thisChat = Key.create(Chat.class, chatroomKey);
 			    //Data Store
+				Key<Chat> thisChat = Key.create(Chat.class, chatroomKey);
 				List<Message> messages = ObjectifyService.begin()
 														.load()
 														.type(Message.class)
@@ -50,6 +50,8 @@ public class OpenedServlet extends HttpServlet {
 														.list();
 				
 				//Memcache
+				MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+				syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 				
 				//Most recently added user
 				String userId = chatroom.users.get(chatroom.users.size()-1);
