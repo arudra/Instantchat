@@ -3,6 +3,7 @@ package com.instantchat;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +18,34 @@ import com.google.appengine.api.users.UserServiceFactory;
 @SuppressWarnings("serial")
 public class DisplayServlet extends HttpServlet
 {
+	private String getLoginURL (HttpServletRequest req, String chatroomKey) throws IOException 
+	{
+	    try {
+	    	
+	      String query;
+	      if (chatroomKey == null) {
+	        query = "";
+	  } else {
+	    query = "g=" + chatroomKey;
+	  }
+	  
+	  //Make sure to always return instant chat URL which leads to chat room
+	  URI thisUri = new URI(req.getRequestURL().toString());
+	  URI uriWithOptionalChatRoomParam = new URI(thisUri.getScheme(),
+	      thisUri.getUserInfo(),
+	      thisUri.getHost(),
+	      thisUri.getPort(),
+	      thisUri.getPath(),
+	      query,
+	      null);
+	  
+	  Logger.getAnonymousLogger().log(Level.INFO, "Login URL: " + uriWithOptionalChatRoomParam);
+	      return uriWithOptionalChatRoomParam.toString();
+	    } catch (URISyntaxException e) {
+	      throw new IOException(e.getMessage());
+	    }
+	   
+	}
 	
 	private String getLogoutURL (HttpServletRequest req) throws IOException
 	{
@@ -46,7 +75,18 @@ public class DisplayServlet extends HttpServlet
 		resp.setContentType("text/html");
 	    PrintWriter out = resp.getWriter();
 	    
+	    String chatroomKey = req.getParameter("g");
 	    final UserService userService = UserServiceFactory.getUserService();
+	    
+	    //User Login
+	    if (userService.getCurrentUser() == null) 
+	    {
+	    	Logger.getAnonymousLogger().log(Level.INFO, "User is NULL");      
+	    	resp.getWriter().println("<p>Please <a href=\"" + 
+	    			userService.createLoginURL(getLoginURL(req, chatroomKey)) + "\">sign in</a>.</p>");
+	     
+	    	return;
+	    }
 		
 		ArrayList<ChatRoom> list = RoomList.getInstance().getList();
 		ChatRoom room;

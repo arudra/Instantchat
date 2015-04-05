@@ -21,8 +21,7 @@ import javax.servlet.http.*;
 @SuppressWarnings("serial")
 public class InstantchatServlet extends HttpServlet 
 {	
-  private String getChatRoomUriWithChatRoomParam(HttpServletRequest req,
-      String chatroomKey) throws IOException 
+  private void setLink(HttpServletRequest req, String chatroomKey) throws IOException 
   {
     try {
     	
@@ -32,8 +31,6 @@ public class InstantchatServlet extends HttpServlet
       } else {
         query = "g=" + chatroomKey;
       }
-      
-      Logger.getAnonymousLogger().log(Level.INFO, "Getting link, query: " + query);
       
       //Make sure to always return instant chat URL which leads to chat room
       URI thisUri = new URI(req.getRequestURL().toString());
@@ -59,11 +56,8 @@ public class InstantchatServlet extends HttpServlet
       }
       
       Logger.getAnonymousLogger().log(Level.INFO, "Login URL: " + uriWithOptionalChatRoomParam);
-      return uriWithOptionalChatRoomParam.toString();
-    } catch (URISyntaxException e) {
-      throw new IOException(e.getMessage());
-    }
-   
+    } catch (URISyntaxException e) { throw new IOException(e.getMessage()); }
+    
   }
  
   @Override
@@ -73,16 +67,7 @@ public class InstantchatServlet extends HttpServlet
     String chatroomKey = req.getParameter("g");
     
     final RoomList roomList = RoomList.getInstance();
-    
-    if (userService.getCurrentUser() == null) 
-    {
-    	Logger.getAnonymousLogger().log(Level.INFO, "User is NULL");      
-    	resp.getWriter().println("<p>Please <a href=\"" + 
-    			userService.createLoginURL(getChatRoomUriWithChatRoomParam(req, chatroomKey)) + "\">sign in</a>.</p>");
-     
-      return;
-    }
-   
+
     PersistenceManager pm = PMF.get().getPersistenceManager();
    
     ChatRoom chatroom = null;
@@ -135,7 +120,7 @@ public class InstantchatServlet extends HttpServlet
     	//Add to global list
     	roomList.addRoom(chatroom);
     	//Setlink
-    	getChatRoomUriWithChatRoomParam(req, chatroomKey);
+    	setLink(req, chatroomKey);
     	newroom = true;
     }
     pm.close();
