@@ -36,7 +36,6 @@ public class InstantchatServlet extends HttpServlet
       Logger.getAnonymousLogger().log(Level.INFO, "Getting link, query: " + query);
       
       //Make sure to always return instant chat URL which leads to chat room
-      //URI thisUri = new URI(URL.substring(0, URL.lastIndexOf('/') + 1) + "instantchat" );
       URI thisUri = new URI(req.getRequestURL().toString());
       URI uriWithOptionalChatRoomParam = new URI(thisUri.getScheme(),
           thisUri.getUserInfo(),
@@ -59,7 +58,7 @@ public class InstantchatServlet extends HttpServlet
     	  }
       }
       
-      
+      Logger.getAnonymousLogger().log(Level.INFO, "Login URL: " + uriWithOptionalChatRoomParam);
       return uriWithOptionalChatRoomParam.toString();
     } catch (URISyntaxException e) {
       throw new IOException(e.getMessage());
