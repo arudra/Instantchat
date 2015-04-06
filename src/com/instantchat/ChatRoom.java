@@ -38,6 +38,7 @@ public class ChatRoom {
   @Persistent
   private String password;
 
+  @Persistent
   public ArrayList<String> users;
   
   public int count;
@@ -82,6 +83,10 @@ public class ChatRoom {
 	}
     return null;
   }
+  
+  public ArrayList<String> getUsers() {
+		return this.users;
+	  }
   
   public String getName() {
 		return this.name;

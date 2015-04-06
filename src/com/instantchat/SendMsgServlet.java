@@ -47,6 +47,9 @@ public class SendMsgServlet extends HttpServlet {
     	if (msg.equals("/exit"))
     	{
     		chatroom.sendMsgToClients("/" + currentUserId + " has left the chat room.");
+    		final RoomList roomList = RoomList.getInstance();
+			ChatRoom roomFromList = roomList.getRoom(chatroom.getKey());
+			roomFromList.removeUser(currentUserId);
     		chatroom.removeUser(currentUserId);
     		if (chatroom.getUsersSize() == 0)
     		{

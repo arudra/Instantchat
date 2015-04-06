@@ -87,6 +87,17 @@ public class DisplayServlet extends HttpServlet
 	     
 	    	return;
 	    }
+	    else
+	    {
+	    	String userId = userService.getCurrentUser().getNickname();
+		    User user = UserList.getInstance().getUser(userId);
+		    
+		    if (user == null)
+		    {
+	    	    //Add User
+		    	UserList.getInstance().addUser(userId);
+		    }
+	    }
 		
 		ArrayList<ChatRoom> list = RoomList.getInstance().getList();
 		ChatRoom room;
@@ -189,7 +200,7 @@ public class DisplayServlet extends HttpServlet
 		out.println("    color: #fff;");
 		out.println("    font-size: 30px;");
 		out.println("}");
-		out.println("#newroom, #roompassword {");
+		out.println("#newroom, #roompassword, #searchuser {");
 		out.println("  width:100%;");
 		out.println("  height:100%;");
 		out.println("  opacity:.95;");
@@ -246,11 +257,8 @@ public class DisplayServlet extends HttpServlet
 		out.println("  font-size:16px;");
 		out.println("  font-family:raleway");
 		out.println("}");
-		out.println("#roomname {");
-		out.println("  background-repeat:no-repeat;");
-		out.println("  background-position:5px 7px");
-		out.println("}");
-		out.println("#password {");
+		out.println("#roomname, #password, #roompass, #searchuserinput {");
+		out.println("  width:100%;");
 		out.println("  background-repeat:no-repeat;");
 		out.println("  background-position:5px 7px");
 		out.println("}");
@@ -267,7 +275,7 @@ public class DisplayServlet extends HttpServlet
 		out.println("  cursor:pointer;");
 		out.println("  border-radius:5px");
 		out.println("}");
-		out.println("button{");
+		out.println("#searchuserpopup{");
 		out.println("  width:200px;");
 		out.println("  height:45px;");
 		out.println("  border:1px solid #ffad41; -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;font-size:15px;font-family:arial, helvetica, sans-serif; padding: 9px 10px 10px 10px; text-decoration:none; display:inline-block;font-weight:bold; color: #FFFFFF;");
@@ -279,7 +287,7 @@ public class DisplayServlet extends HttpServlet
 		out.println("  background-image: linear-gradient(to bottom, #ffc579, #fb9d23);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffc579, endColorstr=#fb9d23);");
 		out.println("  cursor:pointer");
 		out.println("}");
-		out.println("button:hover{");
+		out.println("#searchuserpopup:hover{");
 		out.println("  border:1px solid #ff9913;");
 		out.println("  background-color: #ffaf46; background-image: -webkit-gradient(linear, left top, left bottom, from(#ffaf46), to(#e78404));");
 		out.println("  background-image: -webkit-linear-gradient(top, #ffaf46, #e78404);");
@@ -288,35 +296,76 @@ public class DisplayServlet extends HttpServlet
 		out.println("  background-image: -o-linear-gradient(top, #ffaf46, #e78404);");
 		out.println("  background-image: linear-gradient(to bottom, #ffaf46, #e78404);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffaf46, endColorstr=#e78404);");
 		out.println("}");
+		out.println("#newroompopup{");
+		out.println("  width:200px;");
+		out.println("  height:45px;");
+		out.println("  border:1px solid #ffad41; -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;font-size:15px;font-family:arial, helvetica, sans-serif; padding: 9px 10px 10px 10px; text-decoration:none; display:inline-block;font-weight:bold; color: #FFFFFF;");
+		out.println("  background-color: #ffc579; background-image: -webkit-gradient(linear, left top, left bottom, from(#ffc579), to(#fb9d23));");
+		out.println("  background-image: -webkit-linear-gradient(top, #ffc579, #fb9d23);");
+		out.println("  background-image: -moz-linear-gradient(top, #ffc579, #fb9d23);");
+		out.println("  background-image: -ms-linear-gradient(top, #ffc579, #fb9d23);");
+		out.println("  background-image: -o-linear-gradient(top, #ffc579, #fb9d23);");
+		out.println("  background-image: linear-gradient(to bottom, #ffc579, #fb9d23);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffc579, endColorstr=#fb9d23);");
+		out.println("  cursor:pointer");
+		out.println("}");
+		out.println("#newroompopup:hover{");
+		out.println("  border:1px solid #ff9913;");
+		out.println("  background-color: #ffaf46; background-image: -webkit-gradient(linear, left top, left bottom, from(#ffaf46), to(#e78404));");
+		out.println("  background-image: -webkit-linear-gradient(top, #ffaf46, #e78404);");
+		out.println("  background-image: -moz-linear-gradient(top, #ffaf46, #e78404);");
+		out.println("  background-image: -ms-linear-gradient(top, #ffaf46, #e78404);");
+		out.println("  background-image: -o-linear-gradient(top, #ffaf46, #e78404);");
+		out.println("  background-image: linear-gradient(to bottom, #ffaf46, #e78404);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffaf46, endColorstr=#e78404);");
+		out.println("}");
+		out.println("#usersbutton{");
+		out.println("  width:100%;");
+		out.println("  height:45px;");
+		out.println("  border:1px solid #616261; -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;font-size:12px;font-family:arial, helvetica, sans-serif; padding: 10px 10px 10px 10px; text-decoration:none; display:inline-block;text-shadow: -1px -1px 0 rgba(0,0,0,0.3);font-weight:bold; color: #FFFFFF;");
+		out.println("  background-color: #7d7e7d; background-image: -webkit-gradient(linear, left top, left bottom, from(#7d7e7d), to(#0e0e0e));");
+		out.println("  background-image: -webkit-linear-gradient(top, #7d7e7d, #0e0e0e);");
+		out.println("  background-image: -moz-linear-gradient(top, #7d7e7d, #0e0e0e);");
+		out.println("  background-image: -ms-linear-gradient(top, #7d7e7d, #0e0e0e);");
+		out.println("  background-image: -o-linear-gradient(top, #7d7e7d, #0e0e0e);");
+		out.println("  background-image: linear-gradient(to bottom, #7d7e7d, #0e0e0e);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#7d7e7d, endColorstr=#0e0e0e);");
+		out.println("  cursor:pointer;");
+		out.println("}");
+		out.println("");
+		out.println("#usersbutton:hover{");
+		out.println("  border:1px solid #4a4b4a;");
+		out.println("  background-color: #646464; background-image: -webkit-gradient(linear, left top, left bottom, from(#646464), to(#282828));");
+		out.println("  background-image: -webkit-linear-gradient(top, #646464, #282828);");
+		out.println("  background-image: -moz-linear-gradient(top, #646464, #282828);");
+		out.println("  background-image: -ms-linear-gradient(top, #646464, #282828);");
+		out.println("  background-image: -o-linear-gradient(top, #646464, #282828);");
+		out.println("  background-image: linear-gradient(to bottom, #646464, #282828);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#646464, endColorstr=#282828);");
+		out.println("}");
 		out.println("</style>");
 		out.println("</head>");
 		
 		out.println("<body id='body' style='overflow:hidden;'>");
 		out.println("<h1>Chat Rooms</h1>");
 		
+		out.println("        <div class='container'>");
+		out.println("            <div class='content'>");
+		out.println("                <ul class='ca-menu'>");
+		
 		int i = 0;
 		while (i < list.size())
 		{
 			room = list.get(i);
-
-			//out.println("<p><button id='passwordpopup' onclick=\"div_roompassword_show('" + room.getLink() + "')\">" + room.getName() + "</button></p>");
-			
-			out.println("        <div class='container'>");
-			out.println("            <div class='content'>");
-			out.println("                <ul class='ca-menu'>");
 			out.println("                    <li>");
-			out.println("                        <a href='#' onclick=\"div_roompassword_show('" + room.getLink() + "'); return false;\">");
+			Logger.getAnonymousLogger().log(Level.INFO, "room.getLink()" + room.getLink());
+			Logger.getAnonymousLogger().log(Level.INFO, "room.getUsersSize()=" + room.getUsersSize());
+			Logger.getAnonymousLogger().log(Level.INFO, "room.getUsers().toString()=" + room.getUsers().toString());
+			out.println("                        <a href='#' onclick=\"div_roompassword_show('" + room.getLink() + "', '" + room.getUsers().toString() + "'); return false;\">");
 			out.println("                            <span class='ca-icon'>" + room.getName() + "</span>");
 			out.println("                        </a>");
-			out.println("                    </li>");
-			out.println("                </ul>");
-			out.println("            </div>");
-			out.println("        </div>");
-			
-			
-			
+			out.println("                    </li>");					
 			i++;
 		}
+		out.println("                </ul>");
+		out.println("            </div>");
+		out.println("        </div>");
 		
 		out.println("<div id='newroom'>");
 		out.println("<div id='popupContact'>");
@@ -331,61 +380,90 @@ public class DisplayServlet extends HttpServlet
 		out.println("</form>");
 		out.println("</div>");
 		out.println("</div>");
+		
 		out.println("<div id='roompassword'>");
 		out.println("<div id='popupContact'>");
 		out.println("<form action='\' id='passwordform' method='get' name='passwordform'>");
 		out.println("<img id='close' src='/images/buttonClose.png' onclick ='div_roompassword_hide()' height='30' width='30'>");
 		out.println("<h2>Enter Password</h2>");
 		out.println("<hr>");
+		out.println("<p><button id='usersbutton' onclick='show_users()'></button></p>");
 		out.println("<input id='roompass' name='password' placeholder='Chat Room Password' type='text'>");
 		out.println("<p></p>");
 		out.println("<a href='javascript:%20submit_password()' id='submit'>Submit</a>");
 		out.println("</form>");
 		out.println("</div>");
+		out.println("</div>");	
+		
+		out.println("<div id='searchuser'>");
+		out.println("<div id='popupContact'>");
+		out.println("<form action='\' id='searchuserform' method='get' name='searchuserform'>");
+		out.println("<img id='close' src='/images/buttonClose.png' onclick ='div_searchuser_hide()' height='30' width='30'>");
+		out.println("<h2>Enter User ID</h2>");
+		out.println("<hr>");
+		out.println("<input id='searchuserinput' name='password' placeholder='Search User ID' type='text'>");
+		out.println("<p></p>");
+		out.println("<a href='javascript:%20submit_searchuser()' id='submit'>Submit</a>");
+		out.println("</form>");
 		out.println("</div>");
-	
-		
-		
+		out.println("</div>");
 		
 		out.println("<p><button id='newroompopup' onclick='div_newroom_show()'>Create New Room</button></p>");
+		out.println("<p><button id='searchuserpopup' onclick='div_searchuser_show()'>Search User</button></p>");
 		out.println("<p> <a href =" + userService.createLogoutURL(getLogoutURL(req)) + ">Logout</a> </p>");
 		out.println("<script>");
 		out.println("var clickedOnce = 0; ");
 		out.println("var roomlink = ''; ");
+		out.println("var roomusers = ''; ");
+		out.println("function submit_searchuser() {");
+		out.println("  setTimeout(function(){ window.location.assign('/userpage' + '?user=' + document.getElementById('searchuserinput').value); }, 100);");
+		out.println("}");
 		out.println("function submit_password() {");
-		out.println("setTimeout(function(){ window.location.assign(roomlink + '&password=' + document.getElementById('roompass').value); }, 100);");
+		out.println("  setTimeout(function(){ window.location.assign(roomlink + '&password=' + document.getElementById('roompass').value); }, 100);");
 		out.println("}");
 		out.println("function check_empty() {");
-		out.println("if (document.getElementById('roomname').value == '') {");
-		out.println("alert('Chat room name can not be empty!');");
-		out.println("} else {");
-		out.println("clickedOnce=1;");
-		out.println("setTimeout(function(){ window.location.assign('\\instantchat?roomname=' + document.getElementById('roomname').value + '&password=' + document.getElementById('password').value); }, 100);");
+		out.println("    if (document.getElementById('roomname').value == '') {");
+		out.println("    alert('Chat room name can not be empty!');");
+		out.println("    } else {");
+		out.println("    clickedOnce=1;");
+		out.println("    setTimeout(function(){ window.location.assign('\\instantchat?roomname=' + document.getElementById('roomname').value + '&password=' + document.getElementById('password').value); }, 100);");
+		out.println("  }");
 		out.println("}");
+		out.println("function div_searchuser_show() {");
+		out.println("  document.getElementById('searchuser').style.display = 'block';");
+		out.println("}");
+		out.println("function div_searchuser_hide(){");
+		out.println("  document.getElementById('searchuser').style.display = 'none';");
 		out.println("}");
 		out.println("function div_newroom_show() {");
-		out.println("document.getElementById('newroom').style.display = 'block';");
+		out.println("  document.getElementById('newroom').style.display = 'block';");
 		out.println("}");
 		out.println("function div_newroom_hide(){");
-		out.println("document.getElementById('newroom').style.display = 'none';");
+		out.println("  document.getElementById('newroom').style.display = 'none';");
 		out.println("}");
-		out.println("function div_roompassword_show(roomlinkpassed) {");
-		out.println("roomlink = roomlinkpassed;");
-		out.println("document.getElementById('roompassword').style.display = 'block';");
+		out.println("function div_roompassword_show(roomlinkpassed, roomuserspassed) {");
+		out.println("  roomusers = roomuserspassed;");
+		out.println("  roomlink = roomlinkpassed;");
+		out.println("  var usercount = roomusers.split(',').length;");
+		out.println("  document.getElementById('usersbutton').innerHTML = 'Users: ' + usercount;");
+		out.println("  document.getElementById('roompassword').style.display = 'block';");
+		out.println("}");
+		out.println("function show_users() {");
+		out.println("  alert(roomusers);");
 		out.println("}");
 		out.println("function div_roompassword_hide(){");
-		out.println("document.getElementById('roompassword').style.display = 'none';");
+		out.println("  document.getElementById('roompassword').style.display = 'none';");
 		out.println("}");
-		out.println(" function attachClicks () { ");
-		out.println(" if (document.getElementById) { ");
-		out.println(" document.getElementById('submit').onclick = function() {  ");
-		out.println("  if (clickedOnce==1) {  ");
-		out.println("  alert('Already Submitted'); return false;  ");
-		out.println("  }    ");
-		out.println("  };  ");
-		out.println(" } ");
-		out.println(" } ");
-		out.println(" window.onload = function() { attachClicks(); };");
+		out.println("function attachClicks () { ");
+		out.println("  if (document.getElementById) { ");
+		out.println("    document.getElementById('submit').onclick = function() {  ");
+		out.println("      if (clickedOnce==1) {  ");
+		out.println("        alert('Already Submitted'); return false;  ");
+		out.println("      }    ");
+		out.println("    };  ");
+		out.println("  } ");
+		out.println("} ");
+		out.println("window.onload = function() { attachClicks(); };");
 		out.println("</script>");
 		out.println("</body>");
 		out.println("</html>");

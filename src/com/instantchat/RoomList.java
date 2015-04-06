@@ -46,4 +46,15 @@ public class RoomList {
 		Logger.getAnonymousLogger().log(Level.INFO, "Retval = " + retval);
 	}
 	
+	public ChatRoom getRoom(Key chatroomkey) {
+		for (int i = 0; i < rooms.size(); i++)
+		{
+			if (rooms.get(i).getKey().equals(chatroomkey))
+			{
+				return rooms.get(i);
+			}
+		}
+		return null;
+	}
+	
 }

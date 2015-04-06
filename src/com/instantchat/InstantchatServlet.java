@@ -100,7 +100,13 @@ public class InstantchatServlet extends HttpServlet
     	    resp.getWriter().write("window.location.assign('/display');</script>");
     	    return;
     	}
+    	//Got to add room in the list copy
+    	//TODO: avoid having a copy?
+    	ChatRoom roomFromList = roomList.getRoom(chatroom.getKey());
     	newjoined = chatroom.addUser(userId); 
+    	roomFromList.addUser(userId);
+    	Logger.getAnonymousLogger().log(Level.INFO, "room.getUsers().toString()=" + chatroom.getUsers().toString());
+    	Logger.getAnonymousLogger().log(Level.INFO, "roomList.get(roomListIndex).getUsers().toString()=" + roomFromList.getUsers().toString());
     } 
     else {
     	//Create chat room

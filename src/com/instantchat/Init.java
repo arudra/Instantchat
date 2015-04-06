@@ -20,6 +20,7 @@ public class Init implements ServletContextListener{
 	public void contextInitialized(ServletContextEvent arg0) {
 		Logger.getAnonymousLogger().log(Level.INFO, "ServletContextListener started");
 		RoomList.createInstance();
+		UserList.createInstance();
 		
 		ObjectifyService.register(Chat.class);
 		ObjectifyService.register(Message.class);
