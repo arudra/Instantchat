@@ -234,6 +234,27 @@ a:hover { text-decoration: underline; }
   cursor: pointer;
 }
 
+#viewChatRooms{
+ border:1px solid #b7b7b7; -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;font-size:15px;font-family:arial, helvetica, sans-serif; padding: 9px 10px 10px 10px; text-decoration:none; display:inline-block;font-weight:bold; color: #FFFFFF;
+ background-color: #d3d3d3; background-image: -webkit-gradient(linear, left top, left bottom, from(#d3d3d3), to(#707070));
+ background-image: -webkit-linear-gradient(top, #d3d3d3, #707070);
+ background-image: -moz-linear-gradient(top, #d3d3d3, #707070);
+ background-image: -ms-linear-gradient(top, #d3d3d3, #707070);
+ background-image: -o-linear-gradient(top, #d3d3d3, #707070);
+ background-image: linear-gradient(to bottom, #d3d3d3, #707070);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#d3d3d3, endColorstr=#707070);
+ cursor:pointer;
+}
+
+#viewChatRooms:hover{
+ border:1px solid #a0a0a0;
+ background-color: #bababa; background-image: -webkit-gradient(linear, left top, left bottom, from(#bababa), to(#575757));
+ background-image: -webkit-linear-gradient(top, #bababa, #575757);
+ background-image: -moz-linear-gradient(top, #bababa, #575757);
+ background-image: -ms-linear-gradient(top, #bababa, #575757);
+ background-image: -o-linear-gradient(top, #bababa, #575757);
+ background-image: linear-gradient(to bottom, #bababa, #575757);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#bababa, endColorstr=#575757);
+}
+
 /** clearfix **/
 .clearfix:after { content: "."; display: block; clear: both; visibility: hidden; line-height: 0; height: 0; }
 .clearfix { display: inline-block; }
@@ -259,6 +280,9 @@ html[xmlns] .clearfix { display: block; }
       
       <section id="bio">
         {{ bio }}
+		<p></p>
+		<p></p>
+		<p><button id='viewChatRooms' onclick="window.location.assign('display')">View Chat Rooms</button></p>
       </section>
       
       <section id="settings" class="hidden">
