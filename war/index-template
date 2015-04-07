@@ -5,12 +5,21 @@
         body {
           font-family: 'Helvetica';
         }
+		h1{
+			margin:0px;
+			padding:20px;
+			font-size:45px;
+			color:#000;
+		    text-shadow:1px 1px 1px rgba(255,255,255,0.9);
+			text-align:center;
+			font-weight:400;
+		}
 
         #display-area {
           text-align: center;
         }
 		
-		textarea[name=msg] {
+		textarea {
            resize: none;
         }
 	
@@ -45,6 +54,32 @@
 		 
 		html[xmlns] .clearfix { display: block; }
 		* html .clearfix { height: 1%; }
+		
+		#page-wrap                      { width: 500px; margin: 30px auto; position: relative; }
+		#chat-wrap                      { border: 1px solid #eee; margin: 0 0 15px 0; }
+		#chat-area                      { height: 400px; overflow: auto; border: 1px solid #666; padding: 20px; background: white; }
+		#chat-area span                 { color: white; background: #333; padding: 1px 8px; -moz-border-radius: 5px; -webkit-border-radius: 8px; margin: 0 5px 0 0; line-height: 170%;}
+		#chat-area p                    { padding: 8px 0; border-bottom: 1px solid #ccc; }
+		
+		#leaveChatRoom{
+		  border:1px solid #ffad41; -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;font-size:15px;font-family:arial, helvetica, sans-serif; padding: 9px 10px 10px 10px; text-decoration:none; display:inline-block;font-weight:bold; color: #FFFFFF;
+		  background-color: #ffc579; background-image: -webkit-gradient(linear, left top, left bottom, from(#ffc579), to(#fb9d23));
+		  background-image: -webkit-linear-gradient(top, #ffc579, #fb9d23);
+		  background-image: -moz-linear-gradient(top, #ffc579, #fb9d23);
+		  background-image: -ms-linear-gradient(top, #ffc579, #fb9d23);
+		  background-image: -o-linear-gradient(top, #ffc579, #fb9d23);
+		  background-image: linear-gradient(to bottom, #ffc579, #fb9d23);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffc579, endColorstr=#fb9d23);
+		  cursor:pointer;
+		}
+		#leaveChatRoom:hover{
+		  border:1px solid #ff9913;
+		  background-color: #ffaf46; background-image: -webkit-gradient(linear, left top, left bottom, from(#ffaf46), to(#e78404));
+		  background-image: -webkit-linear-gradient(top, #ffaf46, #e78404);
+		  background-image: -moz-linear-gradient(top, #ffaf46, #e78404);
+		  background-image: -ms-linear-gradient(top, #ffaf46, #e78404);
+		  background-image: -o-linear-gradient(top, #ffaf46, #e78404);
+		  background-image: linear-gradient(to bottom, #ffaf46, #e78404);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffaf46, endColorstr=#e78404);
+		}
       </style>
   </head>
   <body>
@@ -54,12 +89,20 @@
 		me: '{{ me }}'
       };
 	  
+	  /*
 	  updateChat = function(msg) {
 		var element = document.getElementById("chat");
 		element.value += msg + "\n";
 		document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
       };
-
+      */
+	  updateChat = function(msg) {
+	    var msgsplit = msg.toString().split(':');
+		var element = document.getElementById("chat-area");
+		element.innerHTML += "<p><span>" + msgsplit[0] + "</span>" + msgsplit[1] + "</p>";
+		document.getElementById("chat-area").scrollTop = document.getElementById("chat-area").scrollHeight;
+      };
+	  
       sendMessage = function(path, opt_param) {
         path += '?chatroomkey=' + state.chatroom_key;
         if (opt_param) {
@@ -133,14 +176,18 @@
 	<div id="w">
     <div id="content" class="clearfix">
     <div id='display-area'>
-      <h2 style="font-family: 'WebSymbolsRegular', cursive;">Insta-Chat</h2>
-	  <p><a href="javascript:sendMsg('/exit')">Leave Chat Room</a></p>
-	  <p>
-	  <textarea id="chatmsg" name="msg" rows="1" cols="20" onkeypress="enterSend(event)"></textarea>
-	  <button id="chatsend" type="button" onclick="sendMsg(document.getElementById('chatmsg').value)" >Send</button>
-	  </p>
-      <textarea id="chat" rows="10" cols="100"  readonly></textarea>
-    </div>
+      <h1 style="font-family: 'WebSymbolsRegular', cursive;">Insta-Chat</h1>
+	  <p><button id='leaveChatRoom' onclick="sendMsg('/exit')">Leave Chat Room</button></p>
+	</div>
+	  <p></p>
+	  <div id="chat-wrap">
+	  <div id="chat-area">
+	  </div>
+	  </div>
+	  <label for="chatmsg" style="float:left;line-height: 170%;">Your message here: </label>
+	  <textarea id="chatmsg" name="msg" style=" height:50px; width:100%;" onkeypress="enterSend(event)"></textarea>
+	  
+    
 	</div>
 	</div>
 	
