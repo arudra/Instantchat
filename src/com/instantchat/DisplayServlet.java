@@ -519,6 +519,13 @@ public class DisplayServlet extends HttpServlet
 		out.println("<input id='Age' name='age' placeholder='Enter Age' type='text'>");
 		out.println("<input id='City' name='city' placeholder='Enter City' type='text'>");
 		out.println("<input id='Country' name='country' placeholder='Enter Country' type='text'>");
+		out.println("<select name='drop'>");
+		out.println("<option value='cat'>Hipster Cat</option>");
+		out.println("<option value='dog'>Cute Dog</option>");
+		out.println("<option value='ninja'>Ninja</option");
+		out.println("<option value='car'>Car</option>");
+		out.println("<option value='bike'>Bike</option");
+		out.println("</select>");
 		out.println("<p></p>");
 		out.println("<a href='javascript:%20submit_edituser()' id='edit'>Update</a>");
 		out.println("</form>");

@@ -27,6 +27,7 @@ public class EditUserServlet extends HttpServlet {
 		String age = req.getParameter("age");
 		String city = req.getParameter("city");
 		String country = req.getParameter("country");
+		String image = req.getParameter("drop");
 		
 		final UserService userService = UserServiceFactory.getUserService();
 		String userId = userService.getCurrentUser().getNickname();
@@ -40,6 +41,7 @@ public class EditUserServlet extends HttpServlet {
 		user.setAge(age);
 		user.setCity(city);
 		user.setCountry(country);
+		user.setPicurl(image + ".jpg");
 		
 		
 		resp.setContentType("text/html");
