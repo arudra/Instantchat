@@ -20,16 +20,16 @@ public class UserList {
 	
 	private UserList () {
 		users = new ArrayList<>();
-		Logger.getAnonymousLogger().log(Level.INFO, "userss was initialised!");
+		Logger.getAnonymousLogger().log(Level.INFO, "users was initialised!");
 	}
 	
 	public static UserList getInstance() { return instance; }
 	
 	public ArrayList<User> getList () { return users; }
 	
-	public void addUser (String userId) {
+	public void addUser (User user) {
 		Logger.getAnonymousLogger().log(Level.INFO, "Adding new user");
-		users.add(new User(userId)); 
+		users.add(user); 
 	}
 	
 	

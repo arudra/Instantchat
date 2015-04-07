@@ -2,19 +2,7 @@
 
 package com.instantchat;
 
-import com.google.appengine.api.channel.ChannelMessage;
-import com.google.appengine.api.channel.ChannelService;
-import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.labs.repackaged.org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -101,6 +89,10 @@ public class User {
   }
   public void setPicurl(String picurl) {
 	  this.picurl = picurl;
+  }
+  
+  public Key getKey() {
+	  return this.key;
   }
   
   public String getUserId() {

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,9 +28,15 @@ public class UserPageServlet extends HttpServlet
 		resp.setContentType("text/html");
 	    
 	    String userId = req.getParameter("user");
-	    User user = UserList.getInstance().getUser(userId);
 	    
-	    if (user == null)
+	    PersistenceManager pm = PMF.get().getPersistenceManager();
+	    User name = UserList.getInstance().getUser(userId);
+	    User user = null;
+	    
+	    if (name != null) {
+	    	user = pm.getObjectById(User.class, name.getKey());
+	    }
+	    else
 	    {
     	    resp.getWriter().write("This user does not exist");
     	    return;

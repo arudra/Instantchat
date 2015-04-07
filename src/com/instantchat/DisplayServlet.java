@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,6 +79,8 @@ public class DisplayServlet extends HttpServlet
 	    String chatroomKey = req.getParameter("g");
 	    final UserService userService = UserServiceFactory.getUserService();
 	    
+	    PersistenceManager pm = PMF.get().getPersistenceManager();
+	    
 	    //User Login
 	    if (userService.getCurrentUser() == null) 
 	    {
@@ -145,8 +148,14 @@ public class DisplayServlet extends HttpServlet
 		    
 		    if (user == null)
 		    {
-	    	    //Add User
-		    	UserList.getInstance().addUser(userId);
+	    	    //Add User to Datastore
+		    	user = new User(userId);
+		    	user.setEmail(userService.getCurrentUser().getEmail());
+		    	pm.makePersistent(user);
+		    	
+		    	//Add to global list
+		    	UserList.getInstance().addUser(user);
+		    	
 		    }
 	    }
 		
@@ -242,7 +251,7 @@ public class DisplayServlet extends HttpServlet
 		out.println("    color: #fff;");
 		out.println("    font-size: 30px;");
 		out.println("}");
-		out.println("#newroom, #roompassword, #searchuser {");
+		out.println("#newroom, #roompassword, #searchuser #edituser{");
 		out.println("  width:100%;");
 		out.println("  height:100%;");
 		out.println("  opacity:.99;");
@@ -299,7 +308,7 @@ public class DisplayServlet extends HttpServlet
 		out.println("  font-size:16px;");
 		out.println("  font-family:raleway");
 		out.println("}");
-		out.println("#roomname, #password, #roompass, #searchuserinput {");
+		out.println("#roomname, #password, #roompass, #searchuserinput #Firstname #Lastname #Bio #Gender #Age #City #Country{");
 		out.println("  width:100%;");
 		out.println("  background-repeat:no-repeat;");
 		out.println("  background-position:5px 7px");
@@ -317,6 +326,27 @@ public class DisplayServlet extends HttpServlet
 		out.println("  cursor:pointer;");
 		out.println("  border-radius:5px;");
 		out.println("  font-family:arial, helvetica, sans-serif;");
+		out.println("}");
+		out.println("#edituserpopup{");
+		out.println("  width:200px;");
+		out.println("  height:45px;");
+		out.println("  border:1px solid #ffad41; -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;font-size:15px;font-family:arial, helvetica, sans-serif; padding: 9px 10px 10px 10px; text-decoration:none; display:inline-block;font-weight:bold; color: #FFFFFF;");
+		out.println("  background-color: #ffc579; background-image: -webkit-gradient(linear, left top, left bottom, from(#ffc579), to(#fb9d23));");
+		out.println("  background-image: -webkit-linear-gradient(top, #ffc579, #fb9d23);");
+		out.println("  background-image: -moz-linear-gradient(top, #ffc579, #fb9d23);");
+		out.println("  background-image: -ms-linear-gradient(top, #ffc579, #fb9d23);");
+		out.println("  background-image: -o-linear-gradient(top, #ffc579, #fb9d23);");
+		out.println("  background-image: linear-gradient(to bottom, #ffc579, #fb9d23);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffc579, endColorstr=#fb9d23);");
+		out.println("  cursor:pointer");
+		out.println("}");
+		out.println("#edituserpopup:hover{");
+		out.println("  border:1px solid #ff9913;");
+		out.println("  background-color: #ffaf46; background-image: -webkit-gradient(linear, left top, left bottom, from(#ffaf46), to(#e78404));");
+		out.println("  background-image: -webkit-linear-gradient(top, #ffaf46, #e78404);");
+		out.println("  background-image: -moz-linear-gradient(top, #ffaf46, #e78404);");
+		out.println("  background-image: -ms-linear-gradient(top, #ffaf46, #e78404);");
+		out.println("  background-image: -o-linear-gradient(top, #ffaf46, #e78404);");
+		out.println("  background-image: linear-gradient(to bottom, #ffaf46, #e78404);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffaf46, endColorstr=#e78404);");
 		out.println("}");
 		out.println("#searchuserpopup{");
 		out.println("  width:200px;");
@@ -476,9 +506,30 @@ public class DisplayServlet extends HttpServlet
 		out.println("</div>");
 		out.println("</div>");
 		
+		out.println("<div id='edituser'>");
+		out.println("<div id='popupContact'>");
+		out.println("<form action='/edituser' id='edituserform' method='get' name='edituserform'>");
+		out.println("<img id='close' src='/images/buttonClose.png' onclick ='div_edituser_hide()' height='30' width='30'>");
+		out.println("<h2>Enter Profile</h2>");
+		out.println("<hr>");
+		out.println("<input id='Firstname' name='firstname' placeholder='Enter First Name' type='text'>");
+		out.println("<input id='Lastname' name='lastname' placeholder='Enter Last Name' type='text'>");
+		out.println("<input id='Bio' name='bio' placeholder='Enter Bio' type='text'>");
+		out.println("<input id='Gender' name='gender' placeholder='Enter Gender (M/F)' type='text'>");
+		out.println("<input id='Age' name='age' placeholder='Enter Age' type='text'>");
+		out.println("<input id='City' name='city' placeholder='Enter City' type='text'>");
+		out.println("<input id='Country' name='country' placeholder='Enter Country' type='text'>");
+		out.println("<p></p>");
+		out.println("<a href='javascript:%20submit_edituser()' id='edit'>Update</a>");
+		out.println("</form>");
+		out.println("</div>");
+		out.println("</div>");	
+		
+		
 		out.println("<div id='buttonwrapper'>");
 		out.println("<p><button id='newroompopup' onclick='div_newroom_show()'>Create New Room</button></p>");
 		out.println("<p><button id='searchuserpopup' onclick='div_searchuser_show()'>Search User</button></p>");
+		out.println("<p><button id='edituserpopup' onclick='div_edituser_show()'>Edit Profile</button></p>");
 		out.println("<p><button id='logout' onclick=\"window.location.assign('" + userService.createLogoutURL(getLogoutURL(req)) + "')\">Logout</button></p>");
 		//out.println("<p> <a href =" + userService.createLogoutURL(getLogoutURL(req)) + ">Logout</a> </p>");
 		out.println("</div>");
@@ -486,6 +537,9 @@ public class DisplayServlet extends HttpServlet
 		out.println("var clickedOnce = 0; ");
 		out.println("var roomlink = ''; ");
 		out.println("var roomusers = ''; ");
+		out.println("function submit_edituser() {");
+		out.println("  document.getElementById('edituserform').submit();");
+		out.println("}");
 		out.println("function submit_searchuser() {");
 		//out.println("  setTimeout(function(){ window.location.assign('/userpage' + '?user=' + document.getElementById('searchuserinput').value); }, 100);");
 		out.println("  document.getElementById('searchuserform').submit();");
@@ -500,6 +554,12 @@ public class DisplayServlet extends HttpServlet
 		out.println("    clickedOnce=1;");
 		out.println("    setTimeout(function(){ window.location.assign('\\instantchat?roomname=' + document.getElementById('roomname').value + '&password=' + document.getElementById('password').value); }, 100);");
 		out.println("  }");
+		out.println("}");
+		out.println("function div_edituser_show() {");
+		out.println("  document.getElementById('edituser').style.display = 'block';");
+		out.println("}");
+		out.println("function div_edituser_hide() {");
+		out.println("  document.getElementById('edituser').style.display = 'none';");
 		out.println("}");
 		out.println("function div_searchuser_show() {");
 		out.println("  document.getElementById('searchuser').style.display = 'block';");
