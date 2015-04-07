@@ -101,7 +101,6 @@ public class InstantchatServlet extends HttpServlet
     	    return;
     	}
     	//Got to add room in the list copy
-    	//TODO: avoid having a copy?
     	ChatRoom roomFromList = roomList.getRoom(chatroom.getKey());
     	newjoined = chatroom.addUser(userId); 
     	roomFromList.addUser(userId);

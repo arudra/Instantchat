@@ -39,7 +39,6 @@ public class RoomList {
 		{
 			if (rooms.get(i).getKey().equals(chatroomkey))
 			{
-				//TODO delete room
 				rooms.remove(i);
 			}
 		}
