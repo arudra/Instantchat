@@ -68,7 +68,8 @@ public class SendMsgServlet extends HttpServlet {
     		chatroom.sendUpdateToUser(currentUserId, "/Unrecognized Command.");
     	}
     }
-    else
+    //Not empty message
+    else if (!(msg.trim().equals("")))
     {
     	//Send message
     	chatroom.sendMsg(currentUserId, msg);
