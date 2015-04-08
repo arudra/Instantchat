@@ -31,7 +31,8 @@ public class UserPageServlet extends HttpServlet
 	    }
 	    else
 	    {
-    	    resp.getWriter().write("This user does not exist");
+	    	resp.getWriter().write("<script>alert('This user does not exist!');");
+		    resp.getWriter().write("window.location.assign('/display');</script>");
     	    return;
 	    }
 		

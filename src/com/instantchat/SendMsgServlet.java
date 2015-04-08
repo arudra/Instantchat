@@ -61,7 +61,7 @@ public class SendMsgServlet extends HttpServlet {
     	else if (msg.equals("/help"))
     	{
     		//Send help message
-    		chatroom.sendUpdateToUser(currentUserId, "/Type '/exit' to exit the chat room.");
+    		chatroom.sendUpdateToUser(currentUserId, "/Use the 'exit' control command to exit the chat room.");
     	}
     	else
     	{

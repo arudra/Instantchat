@@ -60,6 +60,7 @@
 		#chat-area                      { height: 400px; overflow: auto; border: 1px solid #666; padding: 20px; background: white; word-wrap: break-word;}
 		#chat-area span                 { color: white; background: #333; padding: 1px 8px; -moz-border-radius: 5px; -webkit-border-radius: 8px; margin: 0 5px 0 0; line-height: 170%;}
 		#chat-area p                    { padding: 8px 0; border-bottom: 1px solid #ccc; }
+		#chat-area a                    { text-decoration: none; }
 		
 		#leaveChatRoom{
 		  border:1px solid #ffad41; -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;font-size:15px;font-family:arial, helvetica, sans-serif; padding: 9px 10px 10px 10px; text-decoration:none; display:inline-block;font-weight:bold; color: #FFFFFF;
@@ -99,7 +100,13 @@
 	  updateChat = function(msg) {
 	    var msgsplit = msg.toString().split(':');
 		var element = document.getElementById("chat-area");
-		element.innerHTML += "<p><span>" + msgsplit[0] + "</span>" + msgsplit[1] + "</p>";
+		element.innerHTML += "<p><a href='/userpage?user=" + msgsplit[0] + "' target=_blank'><span>" + msgsplit[0] + "</span></a>" + msgsplit[1] + "</p>";
+		document.getElementById("chat-area").scrollTop = document.getElementById("chat-area").scrollHeight;
+      };
+	  
+	  updateChatControl = function(msg, colour) {
+		var element = document.getElementById("chat-area");
+		element.innerHTML += "<p><span style='background:#" + colour + "'>" + msg + "</span></p>";
 		document.getElementById("chat-area").scrollTop = document.getElementById("chat-area").scrollHeight;
       };
 	  
@@ -136,13 +143,24 @@
 		{
 		    if (newState.msg.lastIndexOf("/",0) == 0)
 			{
-			  if (newState.msg.split("/")[1] == state.me + " has left the chat room.")
+			  if (newState.msg.indexOf("left") > -1)
 			  {
-			    setTimeout(function(){ window.location.assign("/display"); }, 500);
-		      }
+			    if (newState.msg.split("/")[1] == state.me + " has left the chat room.")
+			    {
+			      setTimeout(function(){ window.location.assign("/display"); }, 500);
+		        }
+				else
+				{
+				  updateChatControl(newState.msg.split("/")[1], "ff4040");
+				}
+			  }
+			  else if (newState.msg.indexOf("joined") > -1)
+			  {
+			    updateChatControl(newState.msg.split("/")[1], "21C51C");
+			  }
 			  else
 			  {
-			    alert(newState.msg.split("/")[1]);
+			    updateChatControl(newState.msg.split("/")[1], "fb9d23");
 			  }
 			}
 			else
@@ -185,7 +203,7 @@
 	  </div>
 	  </div>
 	  <label for="chatmsg" style="float:left;line-height: 170%;">Your message here: </label>
-	  <textarea id="chatmsg" name="msg" style=" height:50px; width:100%;" onkeypress="enterSend(event)"></textarea>
+	  <textarea id="chatmsg" name="msg" style=" height:50px; width:100%;" onkeypress="enterSend(event)" autofocus></textarea>
 	  
     
 	</div>

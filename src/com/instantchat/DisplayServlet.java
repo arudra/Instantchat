@@ -279,7 +279,7 @@ public class DisplayServlet extends HttpServlet
 		out.println("    display: block;");
 		out.println("    width: 100%;");
 		out.println("    height: 100%;");
-		out.println("    color: #333;");
+		out.println("    color: #000;");
 		out.println("    position:relative;");
 		out.println("    text-decoration:none;");
 		out.println("}");
@@ -296,6 +296,12 @@ public class DisplayServlet extends HttpServlet
 		out.println("    -o-transition: all 200ms linear;");
 		out.println("    -ms-transition: all 200ms linear;");
 		out.println("    transition: all 200ms linear;");
+		out.println("}");
+		out.println("h3{");
+		out.println("    font-family: 'WebSymbolsRegular', cursive;");
+		out.println("    font-size: 30px;");
+		out.println("    text-align:center;");
+		out.println("    color: #000;");
 		out.println("}");
 		out.println(".ca-menu li:hover{");
 		out.println("    border-color: #FF9900;");
@@ -512,24 +518,32 @@ public class DisplayServlet extends HttpServlet
 		out.println("            <div class='content'>");
 		out.println("                <ul class='ca-menu'>");
 		
-		int i = 0;
-		while (i < list.size())
+		if (list.size() == 0)
 		{
-			room = list.get(i);
-			out.println("                    <li>");
-			Logger.getAnonymousLogger().log(Level.INFO, "room.getLink()" + room.getLink());
-			Logger.getAnonymousLogger().log(Level.INFO, "room.getUsersSize()=" + room.getUsersSize());
-			Logger.getAnonymousLogger().log(Level.INFO, "room.getUsers().toString()=" + room.getUsers().toString());
-			out.println("                        <a href='#' onclick=\"div_roompassword_show('" + room.getLink() + "', '" + room.getUsers().toString() + "'); return false;\">");
-			out.println("                            <span class='ca-icon'>" + room.getName() + "</span>");
-			out.println("                        </a>");
-			out.println("                    </li>");					
-			i++;
+			out.println("<h3>No rooms available</h3>");
+		}
+		else
+		{
+			int i = 0;
+			while (i < list.size())
+			{
+				room = list.get(i);
+				out.println("                    <li>");
+				Logger.getAnonymousLogger().log(Level.INFO, "room.getLink()" + room.getLink());
+				Logger.getAnonymousLogger().log(Level.INFO, "room.getUsersSize()=" + room.getUsersSize());
+				Logger.getAnonymousLogger().log(Level.INFO, "room.getUsers().toString()=" + room.getUsers().toString());
+				out.println("                        <a href='#' onclick=\"div_roompassword_show('" + room.getLink() + "', '" + room.getUsers().toString() + "'); return false;\">");
+				out.println("                            <span class='ca-icon'>" + room.getName() + "</span>");
+				out.println("                        </a>");
+				out.println("                    </li>");					
+				i++;
+			}
 		}
 		out.println("                </ul>");
 		out.println("            </div>");
 		out.println("        </div>");
 		
+		out.println("<hr align='center' style='margin:0px 0px;'>");
 		out.println("<div id='newroom'>");
 		out.println("<div id='popupContact'>");
 		out.println("<form action=\"\\instantchat\" id='newroomform' method='get' name='form'>");
@@ -642,18 +656,21 @@ public class DisplayServlet extends HttpServlet
 		out.println("}");
 		out.println("function div_edituser_show() {");
 		out.println("  document.getElementById('edituser').style.display = 'block';");
+		out.println("  document.getElementById('Firstname').focus();");
 		out.println("}");
 		out.println("function div_edituser_hide() {");
 		out.println("  document.getElementById('edituser').style.display = 'none';");
 		out.println("}");
 		out.println("function div_searchuser_show() {");
 		out.println("  document.getElementById('searchuser').style.display = 'block';");
+		out.println("  document.getElementById('searchuserinput').focus();");
 		out.println("}");
 		out.println("function div_searchuser_hide(){");
 		out.println("  document.getElementById('searchuser').style.display = 'none';");
 		out.println("}");
 		out.println("function div_newroom_show() {");
 		out.println("  document.getElementById('newroom').style.display = 'block';");
+		out.println("  document.getElementById('roomname').focus();");
 		out.println("}");
 		out.println("function div_newroom_hide(){");
 		out.println("  document.getElementById('newroom').style.display = 'none';");
@@ -664,6 +681,7 @@ public class DisplayServlet extends HttpServlet
 		out.println("  var usercount = roomusers.split(',').length;");
 		out.println("  document.getElementById('usersbutton').innerHTML = 'Users: ' + usercount;");
 		out.println("  document.getElementById('roompassword').style.display = 'block';");
+		out.println("  document.getElementById('roompass').focus();");
 		out.println("}");
 		out.println("function show_users() {");
 		out.println("  alert(roomusers);");
